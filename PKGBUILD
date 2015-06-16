@@ -8,9 +8,9 @@ pkgdesc="Powersave script, compatible with systemd through udev rules"
 arch=('any')
 url="https://github.com/spamn/powersave"
 license=('GPL2')
-depends=('bash' 'iw' 'hdparm' 'xorg-xset' 'systemd-tools' )
+depends=('bash' 'iw' 'xorg-xset' 'systemd-tools' )
 makedepends=('git')
-source=('git://github.com/Unia/powersave.git')
+source=('git://github.com/spamn/powersave.git')
 md5sums=('SKIP')
 
 pkgver() {
