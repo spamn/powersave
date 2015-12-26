@@ -1,5 +1,14 @@
 #!/bin/sh
 
+if [ -w /sys/class/backlight/intel_backlight/brightness ] ; then
+	DEVICES_BRIGHTNESS=/sys/class/backlight/intel_backlight/brightness
+	MAX_BRIGHTNESS=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+	BAT_BRIGHTNESS=$(( 10 * $MAX_BRIGHTNESS / 100 ))
+	AC_BRIGHTNESS=$(( 70 * $MAX_BRIGHTNESS / 100 ))
+fi
+
+IF_WIFI=wlp2s0
+
 case "$1" in
 	true) # Enable power saving settings on battery
 	  # bus
@@ -27,9 +36,9 @@ case "$1" in
 	  echo 1 > /sys/module/snd_hda_intel/parameters/power_save
 	  echo Y > /sys/module/snd_hda_intel/parameters/power_save_controller
 	  # wifi powersave
-	  iw dev wlp2s0 set power_save on &> /dev/null
+	  iw dev $IF_WIFI set power_save on &> /dev/null
 	  # screen powersave
-	  for i in /sys/class/backlight/intel_backlight/brightness; do echo 30 > $i; done
+	  for i in $DEVICES_BRIGHTNESS ; do echo $BAT_BRIGHTNESS > $i ; done
 	  xset +dpms
 	  xset dpms 0 0 120
 	  ;;
@@ -60,9 +69,9 @@ case "$1" in
 	  echo 0 > /sys/module/snd_hda_intel/parameters/power_save
 	  echo Y > /sys/module/snd_hda_intel/parameters/power_save_controller
 	  # wifi powersave
-	  iw dev wlp2s0 set power_save off &> /dev/null
+	  iw dev $IF_WIFI set power_save off &> /dev/null
 	  # screen powersave
-	  for i in /sys/class/backlight/intel_backlight/brightness; do echo 9 > $i; done
+	  for i in $DEVICES_BRIGHTNESS ; do echo $AC_BRIGHTNESS > $i ; done
 	  xset -dpms
 	  ;;
 esac
